@@ -239,7 +239,7 @@ elseif (which_pipeline==4)
 else
  tms_opt.fnamehead = [subjects_folder sep subj sep subj '.msh'];
 end
-tms_opt.fnamecoil = coil_name;
+tms_opt.fnamecoil = [simnibs_folder coil_models_are_here coil_name];
 tms_opt.search_radius = scalp_search_radius;
 tms_opt.spatial_resolution = scalp_coil_center_search_grid;
 tms_opt.angle_resolution = coil_rotation_discretization;
