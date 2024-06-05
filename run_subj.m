@@ -352,6 +352,7 @@ for i=hairthicknesses
  A(1:3,3)=-A(1:3,3);
  A(4,4)=1;
  
+ Flip_current_direction=0; 
  if (Automatric_Flip_current_direction==1)
    t=A(1:3,4);
    axis_we_measure_angle_from=[0 1 0]';  %y axis pointing anterior-posterior
@@ -365,8 +366,6 @@ for i=hairthicknesses
    if (angle>90 && angle<270)
       A(1:3,2)=-A(1:3,2);  
       Flip_current_direction=1;
-   else
-      Flip_current_direction=0; 
    end
  end
 
