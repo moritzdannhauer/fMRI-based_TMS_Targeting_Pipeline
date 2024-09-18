@@ -348,7 +348,7 @@ for i=hairthicknesses
   end
  end
 
- A(1:3,2)=-A(1:3,2);
+ A(1:3,1)=-A(1:3,1);
  A(1:3,3)=-A(1:3,3);
  A(4,4)=1;
  
@@ -364,7 +364,7 @@ for i=hairthicknesses
    o=o / sqrt(sum(o.^2));
    angle=acosd(dot(o, A(1:3,2)));
    if (angle>90 && angle<270)
-      A(1:3,2)=-A(1:3,2);  
+      A(1:3,1:2)=-A(1:3,1:2);  
       Flip_current_direction=1;
    end
  end
@@ -375,7 +375,7 @@ for i=hairthicknesses
  scalp_normal=f(index,:);
  %check z-axis is correct
  if (dot(A(1:3,3),scalp_normal)<0)
-    A(1:3,3)=-A(1:3,3); 
+    A(1:3,[1 3])=-A(1:3,[1 3]); 
  end
  
  make_brainsight_files(subjects_folder, subj, target_name, A, outputfolder, i, Flip_current_direction, sep, 2);
