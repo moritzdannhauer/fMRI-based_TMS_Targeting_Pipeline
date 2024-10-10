@@ -58,6 +58,7 @@ tms_opt = opt_struct('TMSoptimize');
 Optimize_ROI_Efield_Magnitude = 0; %0 means TMS coil placement is optimized for a particular ROI-E-field direction (i.e., perpendicular to sulcal wall)
 hairthicknesses=0.5;%1:8;%0.5:0.5:3.0;%:0.5:7.5; %in mm
 TMS_induced_Efield_flows_into_sulcalwall=1; %1=into wall, most effcicent for neuronal recruitment
+biphasic_waveform = true;
 scalp_search_radius=1; %25mm radius around scalp-prpjected point
 scalp_coil_center_search_grid=1; %1mm Manhattan distance
 coil_rotation_discretization = 90; %1 degree
@@ -248,6 +249,9 @@ tms_opt.open_in_gmsh=0;
 if (Optimize_ROI_Efield_Magnitude==0)
  if (TMS_induced_Efield_flows_into_sulcalwall==1)
    target.field=-target.field; %E-Field pointing into sulc wall (equals second part of biphasic pulse)    
+ end
+ if biphasic_waveform
+     tms_opt.didt = -tms_opt.didt;
  end
 end
 
