@@ -58,6 +58,7 @@ tms_opt = opt_struct('TMSoptimize');
 Optimize_ROI_Efield_Magnitude = 0; %0 means TMS coil placement is optimized for a particular ROI-E-field direction (i.e., perpendicular to sulcal wall)
 hairthicknesses=0.5;%1:8;%0.5:0.5:3.0;%:0.5:7.5; %in mm
 TMS_induced_Efield_flows_into_sulcalwall=1; %1=into wall, most effcicent for neuronal recruitment
+biphasic_waveform = true;
 scalp_search_radius=1; %25mm radius around scalp-prpjected point
 scalp_coil_center_search_grid=1; %1mm Manhattan distance
 coil_rotation_discretization = 90; %1 degree
@@ -239,7 +240,7 @@ elseif (which_pipeline==4)
 else
  tms_opt.fnamehead = [subjects_folder sep subj sep subj '.msh'];
 end
-tms_opt.fnamecoil = coil_name;
+tms_opt.fnamecoil = [simnibs_folder coil_models_are_here coil_name];
 tms_opt.search_radius = scalp_search_radius;
 tms_opt.spatial_resolution = scalp_coil_center_search_grid;
 tms_opt.angle_resolution = coil_rotation_discretization;
@@ -248,6 +249,9 @@ tms_opt.open_in_gmsh=0;
 if (Optimize_ROI_Efield_Magnitude==0)
  if (TMS_induced_Efield_flows_into_sulcalwall==1)
    target.field=-target.field; %E-Field pointing into sulc wall (equals second part of biphasic pulse)    
+ end
+ if biphasic_waveform
+     tms_opt.didt = -tms_opt.didt;
  end
 end
 
@@ -348,10 +352,11 @@ for i=hairthicknesses
   end
  end
 
- A(1:3,2)=-A(1:3,2);
+ A(1:3,1)=-A(1:3,1);
  A(1:3,3)=-A(1:3,3);
  A(4,4)=1;
  
+ Flip_current_direction=0; 
  if (Automatric_Flip_current_direction==1)
    t=A(1:3,4);
    axis_we_measure_angle_from=[0 1 0]';  %y axis pointing anterior-posterior
@@ -363,10 +368,8 @@ for i=hairthicknesses
    o=o / sqrt(sum(o.^2));
    angle=acosd(dot(o, A(1:3,2)));
    if (angle>90 && angle<270)
-      A(1:3,2)=-A(1:3,2);  
+      A(1:3,1:2)=-A(1:3,1:2);  
       Flip_current_direction=1;
-   else
-      Flip_current_direction=0; 
    end
  end
 
@@ -376,7 +379,7 @@ for i=hairthicknesses
  scalp_normal=f(index,:);
  %check z-axis is correct
  if (dot(A(1:3,3),scalp_normal)<0)
-    A(1:3,3)=-A(1:3,3); 
+    A(1:3,[1 3])=-A(1:3,[1 3]); 
  end
  
  make_brainsight_files(subjects_folder, subj, target_name, A, outputfolder, i, Flip_current_direction, sep, 2);

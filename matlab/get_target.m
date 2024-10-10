@@ -198,7 +198,7 @@ if (tmp1~=0 || tmp2~=0)
         end
      end
     else
-      brain_voxels=GM_fromMesh;  
+      brain_voxels=find(GM_fromMesh);  
     end
     
     [gm_x gm_y gm_z] = ind2sub(size(GM_fromMesh),brain_voxels); 
